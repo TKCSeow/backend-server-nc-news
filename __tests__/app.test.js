@@ -73,4 +73,22 @@ describe('GET /api/articles/:article_id', () => {
           });
       })
     })
+
+    test("Returns 400 and an error message when invalid id passed", () => {
+        return request(app)
+        .get("/api/articles/one")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("400 Bad Request - Invalid ID")
+        })
+      })
+
+    test("Returns 404 and an error message when non-existant article requested", () => {
+        return request(app)
+        .get("/api/articles/999")
+        .expect(404)
+        .then(({body}) => {
+          expect(body.msg).toBe("404 Article Not Found")
+        })
+      })
 })
