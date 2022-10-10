@@ -13,4 +13,4 @@ This is a backend server for a news api
 
 3. Double check that these .env files are .gitignored
 
-4. (Optional) In some cases you may need be require to add a password to the .env files depending on what operating system you are using. To do this, in each of the .env files, add `PGPASSWORD=<your_psql_password>` before `PGDATABASE`
+4. (Optional) In some cases you may need be required to add a password to the .env files depending on what operating system you are using. To do this, in each of the .env files, add `PGPASSWORD=<your_psql_password>` before `PGDATABASE`
