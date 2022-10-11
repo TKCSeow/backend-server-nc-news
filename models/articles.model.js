@@ -25,7 +25,7 @@ function updateArticleById (article_id, inc_votes) {
         .then((article)=>{
 
             if (inc_votes === undefined) {
-                return Promise.reject({status: 400, msg: "400 Bad Request - inc_votes not given"})
+                inc_votes = 0;
             }
 
             return db.query(`

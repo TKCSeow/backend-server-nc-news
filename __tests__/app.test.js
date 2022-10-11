@@ -126,13 +126,14 @@ describe('PATCH /api/articles/:article_id', () => {
     })
   })
 
-  test("return status 400 and an error message when an empty object is in the request", () => {
+  test("return status 200 and return article unchanged", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({})
-      .expect(400)
+      .expect(200)
       .then(({body}) => {
-        expect(body.msg).toBe("400 Bad Request - inc_votes not given")
+        const article = body.article;
+        expect(article.votes).toBe(100)
       })
   });
 
