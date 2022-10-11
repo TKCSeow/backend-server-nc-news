@@ -62,15 +62,6 @@ describe('GET /api/articles/:article_id', () => {
                 votes: expect.any(Number),
             })
         )
-        expect(article).toEqual(  {
-            article_id: 1,
-            title: "Living in the shadow of a great man",
-            topic: "mitch",
-            author: "butter_bridge",
-            body: "I find this existence challenging",
-            created_at: "2020-07-09T20:11:00.000Z",
-            votes: 100,
-          });
       })
     })
 
@@ -91,6 +82,26 @@ describe('GET /api/articles/:article_id', () => {
           expect(body.msg).toBe("404 Article Not Found")
         })
       })
+})
+
+describe('GET /api/articles/:article_id - comment_count', () => {
+  test("Return status 200 and returns specified article with comment_count", () => {
+    return request(app)
+    .get("/api/articles/1")  
+    .expect(200)
+    .then(({body}) => {
+      const article = body.article;
+      
+      expect(article).toEqual(
+          expect.objectContaining({
+            comment_count: expect.any(Number),         
+          })
+      )
+          
+      expect(article.comment_count).toBe(11)
+      
+    })
+  })
 })
 
 describe('PATCH /api/articles/:article_id', () => {
