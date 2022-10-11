@@ -137,6 +137,27 @@ describe('PATCH /api/articles/:article_id', () => {
       })
   });
 
+  
+  test("return status 400 when non-integer given", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({inc_votes: 1.5})
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("400 Bad Request - inc_votes must be an integer")
+      })
+  });
+
+  test("return status 400 when non-numeric string given", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({inc_votes: "one"})
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("400 Bad Request - inc_votes must be an integer")
+      })
+  });
+
   test("return status 404 and an error message when the article does not exists", () => {
     return request(app)
       .patch("/api/articles/99999")

@@ -22,12 +22,15 @@ function selectArticleById (article_id) {
 
 function updateArticleById (article_id, inc_votes) {     
     return selectArticleById(article_id)
-        .then((article)=>{
+        .then(()=>{
 
             if (inc_votes === undefined) {
                 inc_votes = 0;
             }
-
+            if(isNaN(inc_votes) === true || inc_votes % 1 !== 0) {
+                return Promise.reject({status: 400, msg: "400 Bad Request - inc_votes must be an integer"})
+            }
+            
             return db.query(`
             UPDATE articles 
             SET votes = votes + $1
