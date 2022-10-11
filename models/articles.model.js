@@ -21,11 +21,8 @@ function selectArticleById (article_id) {
 }
 
 function updateArticleById (article_id, inc_votes) {     
-    console.log(article_id, inc_votes, "<<<<<< INPUT MODEL")
-
     return selectArticleById(article_id)
         .then((article)=>{
-            console.log(article, "<<<<< INPUT MODEL")
 
             if (inc_votes === undefined) {
                 return Promise.reject({status: 400, msg: "400 Bad Request - inc_votes not given"})
@@ -46,7 +43,6 @@ function updateArticleById (article_id, inc_votes) {
             RETURNING *;`, [inc_votes, article_id])
         })
         .then(({rows : article}) => {
-            console.log(article, "<<<<< INPUT OUTPUT")
             return article[0];
         })
 }
