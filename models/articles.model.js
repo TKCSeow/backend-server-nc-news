@@ -28,14 +28,6 @@ function updateArticleById (article_id, inc_votes) {
                 return Promise.reject({status: 400, msg: "400 Bad Request - inc_votes not given"})
             }
 
-            if ((article.votes + inc_votes) < 0) {
-                return db.query(`
-                UPDATE articles 
-                SET votes = $1
-                WHERE article_id = $2
-                RETURNING *;`, [0, article_id])
-            }
-
             return db.query(`
             UPDATE articles 
             SET votes = votes + $1

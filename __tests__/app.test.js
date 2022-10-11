@@ -116,17 +116,6 @@ describe('PATCH /api/articles/:article_id', () => {
     })
   })
 
-  test("Return status 200 and returns the updated article with votes = 0 when deducting greater than votes held", () => {
-    return request(app)
-    .patch("/api/articles/1")
-    .send({inc_votes: -101})  
-    .expect(200)
-    .then(({body}) => {
-      const article = body.article;     
-      expect(article.votes).toBe(0)
-    })
-  })
-
   test("Return status 400 and an error message when invalid id passed", () => {
     return request(app)
     .patch("/api/articles/one")
