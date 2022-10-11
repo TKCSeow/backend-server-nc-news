@@ -1,6 +1,24 @@
 const db = require("../db/connection.js");
 
-function selectArticles() {
+function selectArticles(topic) {
+
+    const validTopics = ["mitch", "cats"];
+
+    let validatedTopicQuery;
+
+    if (validTopics.includes(topic) === true) {
+        validatedTopicQuery = `WHERE articles.topic = '${topic}'`;
+    } 
+    else if (topic === undefined) {
+        validatedTopicQuery = "";
+    }
+    else if (topic === "") {
+        return Promise.reject({status: 400, msg: `400 Bad Request - no query value given`})
+    }
+    else {
+        return Promise.reject({status: 404, msg: `404 no articles of topic "${topic}" found`})
+    }
+
     return db.query(`
         SELECT 
             articles.*,
@@ -8,23 +26,15 @@ function selectArticles() {
         FROM articles  
         LEFT JOIN comments
         ON comments.article_id = articles.article_id
-        GROUP BY articles.article_id
+        ${validatedTopicQuery}
+        GROUP BY articles.article_id   
+        ORDER BY created_at DESC
+        
     ;`)
     .then(({rows: articles})=> {
         return articles;
     })
 }
-
-/*
-    SELECT 
-    articles.*, 
-    COUNT(comments.comment_id) ::INT AS comment_count FROM articles
-    LEFT JOIN comments
-    ON comments.article_id = articles.article_id
-    WHERE articles.article_id = $1
-    GROUP BY articles.article_id
-
-*/
 
 function selectArticleById (article_id) {
 

@@ -44,7 +44,7 @@ describe('GET /api/topics', () => {
     })
 })
 
-describe.only('GET /api/articles', () => {
+describe('GET /api/articles', () => {
   test("Return status 200 and returns all articles with comment_count", () => {
     return request(app)
     .get("/api/articles")  
@@ -73,15 +73,64 @@ describe.only('GET /api/articles', () => {
   })
 
   describe('GET /api/articles - SORTING', () => {
-    test("", () => {
+    test("Return 200, should have default sorting by date, descending", () => {
+      return request(app)
+      .get("/api/articles")  
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("created_at", { descending: true })
 
+      })
     })
   })
 
   describe('GET /api/articles - QUERIES', () => {
-    test("", () => {
+    test("Return 200, should take a query of topic and filter articles", () => {
+      return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+  
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(1)
 
+        articles.forEach(article => {
+          expect(article.topic).toBe("cats")
+        })
+      })
     })
+
+    test("Return status 404 and an error message when non-existant query value given", () => {
+      return request(app)
+      .get("/api/articles?topic=economy")
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe("404 no articles of topic \"economy\" found")
+      })
+    })
+
+    test("Return status 400 and an error message when query value left empty", () => {
+      return request(app)
+      .get("/api/articles?topic=")
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("400 Bad Request - no query value given")
+      })
+    })
+
+    test("Return status 200 and all articles when non-existant query type given", () => {
+      return request(app)
+      .get("/api/articles?tag=funny")
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles; 
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(12)
+      })
+    })
+
   })
 
 })
