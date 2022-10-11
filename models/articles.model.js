@@ -1,5 +1,31 @@
 const db = require("../db/connection.js");
 
+function selectArticles() {
+    return db.query(`
+        SELECT 
+            articles.*,
+            COUNT(comments.comment_id) ::INT AS comment_count
+        FROM articles  
+        LEFT JOIN comments
+        ON comments.article_id = articles.article_id
+        GROUP BY articles.article_id
+    ;`)
+    .then(({rows: articles})=> {
+        return articles;
+    })
+}
+
+/*
+    SELECT 
+    articles.*, 
+    COUNT(comments.comment_id) ::INT AS comment_count FROM articles
+    LEFT JOIN comments
+    ON comments.article_id = articles.article_id
+    WHERE articles.article_id = $1
+    GROUP BY articles.article_id
+
+*/
+
 function selectArticleById (article_id) {
 
     if(isNaN(article_id) === true) {
@@ -42,4 +68,4 @@ function updateArticleById (article_id, inc_votes) {
         })
 }
 
-module.exports = {selectArticleById, updateArticleById}
+module.exports = {selectArticleById, updateArticleById, selectArticles}

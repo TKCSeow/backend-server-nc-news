@@ -44,6 +44,48 @@ describe('GET /api/topics', () => {
     })
 })
 
+describe.only('GET /api/articles', () => {
+  test("Return status 200 and returns all articles with comment_count", () => {
+    return request(app)
+    .get("/api/articles")  
+    .expect(200)
+    .then(({body}) => {
+      const articles = body.articles;
+
+      expect(articles).toBeInstanceOf(Array);
+      expect(articles).toHaveLength(12)
+
+      articles.forEach(article => {
+        expect(article).toEqual(
+          expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              author: expect.any(String),
+              topic: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+        )
+      })
+    })
+  })
+
+  describe('GET /api/articles - SORTING', () => {
+    test("", () => {
+
+    })
+  })
+
+  describe('GET /api/articles - QUERIES', () => {
+    test("", () => {
+
+    })
+  })
+
+})
+
 describe('GET /api/articles/:article_id', () => {
     test("Return status 200 and returns data of specified article", () => {
       return request(app)
