@@ -4,11 +4,13 @@ const topicsController = require("./controllers/topics.controller.js")
 const articlesController = require("./controllers/articles.controller.js")
 const usersController = require("./controllers/users.controller.js")
 
+app.use(express.json());
 
 // Endpoints
 app.get("/api/topics", topicsController.getTopics)
 
 app.get("/api/articles/:article_id", articlesController.getArticleById)
+app.patch("/api/articles/:article_id", articlesController.patchArticleById)
 
 app.get("/api/users", usersController.getUsers)
 
