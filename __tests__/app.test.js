@@ -93,6 +93,94 @@ describe('GET /api/articles/:article_id', () => {
       })
 })
 
+describe('PATCH /api/articles/:article_id', () => {
+  test("Return status 200 and returns the updated article with votes added to", () => {
+    return request(app)
+    .patch("/api/articles/1")
+    .send({inc_votes: 1})  
+    .expect(200)
+    .then(({body}) => {
+      const article = body.article;     
+      expect(article.votes).toBe(101)
+    })
+  })
+
+  test("Return status 200 and returns the updated article with votes deducted", () => {
+    return request(app)
+    .patch("/api/articles/1")
+    .send({inc_votes: -1})  
+    .expect(200)
+    .then(({body}) => {
+      const article = body.article;     
+      expect(article.votes).toBe(99)
+    })
+  })
+
+  test("Return status 400 and an error message when invalid id passed", () => {
+    return request(app)
+    .patch("/api/articles/one")
+    .send({inc_votes: 1})
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("400 Bad Request - Invalid ID")
+    })
+  })
+
+  test("return status 200 and return article unchanged", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(200)
+      .then(({body}) => {
+        const article = body.article;
+        expect(article.votes).toBe(100)
+      })
+  });
+
+  
+  test("return status 400 when non-integer given", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({inc_votes: 1.5})
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("400 Bad Request - inc_votes must be an integer")
+      })
+  });
+
+  test("return status 400 when non-numeric string given", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({inc_votes: "one"})
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("400 Bad Request - inc_votes must be an integer")
+      })
+  });
+
+  test("return status 404 and an error message when the article does not exists", () => {
+    return request(app)
+      .patch("/api/articles/99999")
+      .send({inc_votes: 1})
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe("404 Article Not Found")
+      })
+  });
+
+  test("return status 200 when successful and ignores any extra/invalid keys", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({inc_votes: 1, title: "New Title"})
+      .expect(200)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article.title).toBe("Living in the shadow of a great man");
+      });
+  });
+
+})
+
 describe('GET /api/users', () => {
     test("Return status 200 and returns of all users", () => {
       return request(app)
