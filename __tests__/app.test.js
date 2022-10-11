@@ -105,23 +105,17 @@ describe.only('PATCH /api/articles/:article_id', () => {
     })
   })
 
-  // test("Returns 400 and an error message when invalid id passed", () => {
-  //     return request(app)
-  //     .get("/api/articles/one")
-  //     .expect(400)
-  //     .then(({body}) => {
-  //       expect(body.msg).toBe("400 Bad Request - Invalid ID")
-  //     })
-  //   })
+  test("Return status 200 and returns the updated article with votes deducted", () => {
+    return request(app)
+    .patch("/api/articles/1")
+    .send({inc_votes: -1})  
+    .expect(200)
+    .then(({body}) => {
+      const article = body.article;     
+      expect(article.votes).toBe(99)
+    })
+  })
 
-  // test("Returns 404 and an error message when non-existant article requested", () => {
-  //     return request(app)
-  //     .get("/api/articles/999")
-  //     .expect(404)
-  //     .then(({body}) => {
-  //       expect(body.msg).toBe("404 Article Not Found")
-  //     })
-  //   })
 })
 
 describe('GET /api/users', () => {
