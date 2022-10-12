@@ -107,7 +107,7 @@ describe('GET /api/articles', () => {
       .get("/api/articles?topic=economy")
       .expect(404)
       .then(({body}) => {
-        expect(body.msg).toBe("404 no articles of topic \"economy\" found")
+        expect(body.msg).toBe("404 no resources found")
       })
     })
 
@@ -173,26 +173,6 @@ describe('GET /api/articles/:article_id', () => {
           expect(body.msg).toBe("404 Article Not Found")
         })
       })
-})
-
-describe('GET /api/articles/:article_id - comment_count', () => {
-  test("Return status 200 and returns specified article with comment_count", () => {
-    return request(app)
-    .get("/api/articles/1")  
-    .expect(200)
-    .then(({body}) => {
-      const article = body.article;
-      
-      expect(article).toEqual(
-          expect.objectContaining({
-            comment_count: expect.any(Number),         
-          })
-      )
-          
-      expect(article.comment_count).toBe(11)
-      
-    })
-  })
 })
 
 describe('PATCH /api/articles/:article_id', () => {
