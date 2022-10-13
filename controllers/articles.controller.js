@@ -14,6 +14,13 @@ exports.getArticleById = (req, res, next) => {
     }).catch(err => next(err))
 }
 
+exports.getCommentsArticleById = (req, res, next) => {
+    const {article_id} = req.params;
+    return articlesModel.selectCommentsByArticleId(article_id).then((comments) => {
+        return res.status(200).send({comments});
+    }).catch(err => next(err))
+}
+
 
 exports.postCommentByArticleId = (req, res, next) => {
     const {article_id} = req.params;
