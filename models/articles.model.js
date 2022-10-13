@@ -1,4 +1,53 @@
 const db = require("../db/connection.js");
+const modelUtils = require("./model-utils.js")
+
+function selectArticles(topic) {
+    
+    if(topic === undefined) {
+        return db.query(`
+            SELECT 
+                articles.*,
+                COUNT(comments.comment_id) ::INT AS comment_count
+            FROM articles  
+            LEFT JOIN comments
+            ON comments.article_id = articles.article_id
+            GROUP BY articles.article_id   
+            ORDER BY created_at DESC
+            
+        ;`).then(({rows: articles})=> {
+            return articles;
+        })
+    }
+
+    return modelUtils.getSlugsFromTopicsDatabase()
+    .then((validTopics) => {
+  
+        const validatedTopicQuery = modelUtils.createValidatedQueriesStr("articles","topic", validTopics, topic);
+
+        if(typeof validatedTopicQuery !== "string"){
+            return validatedTopicQuery;
+        }
+        
+        
+        return db.query(`
+            SELECT 
+                articles.*,
+                COUNT(comments.comment_id) ::INT AS comment_count
+            FROM articles  
+            LEFT JOIN comments
+            ON comments.article_id = articles.article_id
+            ${validatedTopicQuery}
+            GROUP BY articles.article_id   
+            ORDER BY created_at DESC
+            
+        ;`)
+    
+    })
+    .then(({rows: articles})=> {
+        return articles;
+    })
+
+}
 
 function selectArticleById (article_id) {
 
@@ -66,4 +115,4 @@ function updateArticleById (article_id, inc_votes) {
         })
 }
 
-module.exports = {selectArticleById, updateArticleById, insertCommentByArticleId}
+module.exports = {selectArticleById, updateArticleById, selectArticles, insertCommentByArticleId}

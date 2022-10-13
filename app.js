@@ -9,6 +9,7 @@ app.use(express.json());
 // Endpoints
 app.get("/api/topics", topicsController.getTopics)
 
+app.get("/api/articles", articlesController.getArticles)
 app.get("/api/articles/:article_id", articlesController.getArticleById)
 
 app.post("/api/articles/:article_id/comments", articlesController.postCommentByArticleId)
