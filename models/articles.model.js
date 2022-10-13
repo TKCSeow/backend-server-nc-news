@@ -1,6 +1,5 @@
 const db = require("../db/connection.js");
 const modelUtils = require("./model-utils.js")
-const format = require('pg-format');
 
 function selectArticles(topic) {
     
@@ -51,99 +50,6 @@ function selectArticles(topic) {
     })
 
 }
-
-
-//     const getData = (topic) => {
-
-//         let topicQueryStr = "";
-
-//         if(topic !== undefined) {
-//             topicQueryStr = `WHERE articles.topics = $1`
-//         }
-
-//         const queryStr = `
-//             SELECT 
-//                 articles.*,
-//                 COUNT(comments.comment_id) ::INT AS comment_count
-//             FROM articles  
-//             LEFT JOIN comments
-//             ON comments.article_id = articles.article_id
-//             ${topicQueryStr}
-//             GROUP BY articles.article_id   
-//             ORDER BY created_at DESC
-//         `
-
-
-//         const formattedQueryStr = format(`
-//             SELECT articles.*,
-//             COUNT(comments.comment_id) ::INT AS comment_count 
-//             FROM articles 
-//             LEFT JOIN comments
-//             ON comments.article_id = articles.article_id
-//             %%
-//             GROUP BY articles.article_id   
-//             ORDER BY created_at DESC;`, topicQueryStr);
-
-//         return db.query(`
-//             SELECT 
-//                 articles.*,
-//                 COUNT(comments.comment_id) ::INT AS comment_count
-//             FROM articles  
-//             LEFT JOIN comments
-//             ON comments.article_id = articles.article_id
-//             ${validatedTopicQuery}
-//             GROUP BY articles.article_id   
-//             ORDER BY created_at DESC
-            
-//         ;`)
-//     }
-
-
-//     return Promise.all([
-//         getData(), 
-//         modelUtils.checkExists("articles", "topic", topic)
-//     ])
-
-
-// }
-//     return Promise.all([
-//         modelUtils.getListOfValidQueriesFromDatabase("topic", "article")
-//     ])
-//     .then((validTopics) => {
-//         console.log(validTopics, "<<<<<<<<<<< MODEL")
-//         let validatedTopicQuery;
-
-        
-//         if (topic === undefined) {
-//             validatedTopicQuery = "";
-//         } 
-//         else if (validTopics.includes(topic) === true) {
-//             validatedTopicQuery = `WHERE articles.topic = '${topic}'`;
-//         } 
-//         else if (topic === "") {
-//             return Promise.reject({status: 400, msg: `400 Bad Request - no query value given`})
-//         }
-//         else {
-//             return Promise.reject({status: 404, msg: `404 no articles of topic "${topic}" found`})
-//         }
-
-//         return db.query(`
-//             SELECT 
-//                 articles.*,
-//                 COUNT(comments.comment_id) ::INT AS comment_count
-//             FROM articles  
-//             LEFT JOIN comments
-//             ON comments.article_id = articles.article_id
-//             ${validatedTopicQuery}
-//             GROUP BY articles.article_id   
-//             ORDER BY created_at DESC
-            
-//         ;`)
-    
-//     }).then(({rows: articles})=> {
-//         return articles;
-//     })
-// }
 
 function selectArticleById (article_id) {
 
