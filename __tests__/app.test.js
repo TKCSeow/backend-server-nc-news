@@ -283,7 +283,7 @@ describe('PATCH /api/articles/:article_id', () => {
 
 })
 
-describe('GET /api/articles/:article_id/comments', () => {
+describe.only('GET /api/articles/:article_id/comments', () => {
   test('Return status 200 and return all comments of articles', () => {
     return request(app)
     .get("/api/articles/1/comments")
@@ -303,6 +303,16 @@ describe('GET /api/articles/:article_id/comments', () => {
             created_at: expect.any(String),
         }))
       })
+    })
+  })
+
+  test('Return status 200 and empty array when there are no comments on an article', () => {
+    return request(app)
+    .get("/api/articles/11/comments")
+    .expect(200)
+    .then(({body}) => {
+      const comments = body.comments;
+      expect(comments).toEqual([])
     })
   })
 
