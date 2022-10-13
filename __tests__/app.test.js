@@ -145,16 +145,43 @@ describe.only('POST /api/articles/:article_id/comment', () => {
   })
 
   describe('Request Body Error Handling', () => {
-    test("username", () => {
+    test("Return 201 and ignores any extra/invalid properties", () => {
       return request(app)
       .post("/api/articles/1/comments")
-      .send({username: "icellusedkars", body: 1})
+      .send({username: "icellusedkars", body: "great article!", votes: 64, tag: "funny"})
       .expect(201)
+      .then(({body}) => {
+        const comment = body.comment;
+        expect(comment).toEqual(expect.objectContaining({
+          comment_id: 19,
+          votes: 0,
+          body: "great article!",
+          author: "icellusedkars",
+          article_id: 1,
+          created_at: expect.any(String),
+        }))
+      })
     })
+
+    test("Return 400 and when given empty/not enough ", () => {
+      return request(app)
+      .post("/api/articles/1/comments")
+      .send({username: "icellusedkars", body: "great article!", votes: 64, tag: "funny"})
+      .expect(201)
+      .then(({body}) => {
+        const comment = body.comment;
+        expect(comment).toEqual(expect.objectContaining({
+          comment_id: 19,
+          votes: 0,
+          body: "great article!",
+          author: "icellusedkars",
+          article_id: 1,
+          created_at: expect.any(String),
+        }))
+      })
     })
-    describe('body', () => {
-      
-    })
+
+  })
 })
 
 describe('PATCH /api/articles/:article_id', () => {
