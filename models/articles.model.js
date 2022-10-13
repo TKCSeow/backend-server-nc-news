@@ -1,4 +1,53 @@
 const db = require("../db/connection.js");
+const modelUtils = require("./model-utils.js")
+
+function selectArticles(topic) {
+    
+    if(topic === undefined) {
+        return db.query(`
+            SELECT 
+                articles.*,
+                COUNT(comments.comment_id) ::INT AS comment_count
+            FROM articles  
+            LEFT JOIN comments
+            ON comments.article_id = articles.article_id
+            GROUP BY articles.article_id   
+            ORDER BY created_at DESC
+            
+        ;`).then(({rows: articles})=> {
+            return articles;
+        })
+    }
+
+    return modelUtils.getSlugsFromTopicsDatabase()
+    .then((validTopics) => {
+  
+        const validatedTopicQuery = modelUtils.createValidatedQueriesStr("articles","topic", validTopics, topic);
+
+        if(typeof validatedTopicQuery !== "string"){
+            return validatedTopicQuery;
+        }
+        
+        
+        return db.query(`
+            SELECT 
+                articles.*,
+                COUNT(comments.comment_id) ::INT AS comment_count
+            FROM articles  
+            LEFT JOIN comments
+            ON comments.article_id = articles.article_id
+            ${validatedTopicQuery}
+            GROUP BY articles.article_id   
+            ORDER BY created_at DESC
+            
+        ;`)
+    
+    })
+    .then(({rows: articles})=> {
+        return articles;
+    })
+
+}
 
 function selectArticleById (article_id) {
 
@@ -7,11 +56,13 @@ function selectArticleById (article_id) {
     }
 
     return db.query(`
-        SELECT * FROM articles
-        WHERE article_id = $1
+        SELECT articles.*, COUNT(comments.comment_id) ::INT AS comment_count FROM articles
+        LEFT JOIN comments
+        ON comments.article_id = articles.article_id
+        WHERE articles.article_id = $1
+        GROUP BY articles.article_id
         ;`, [article_id])
     .then(({rows: article}) => {
-        
         if(article[0] === undefined) {
             return Promise.reject({status: 404, msg: "404 Article Not Found"})
         }
@@ -58,4 +109,4 @@ function selectCommentsByArticleId(article_id) {
         })
 }
 
-module.exports = {selectArticleById, updateArticleById, selectCommentsByArticleId}
+module.exports = {selectArticleById, updateArticleById, selectArticles, selectCommentsByArticleId}
