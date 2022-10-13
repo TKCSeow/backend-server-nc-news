@@ -105,4 +105,20 @@ function updateArticleById (article_id, inc_votes) {
         })
 }
 
-module.exports = {selectArticleById, updateArticleById, selectArticles}
+function selectCommentsByArticleId(article_id) {
+    return selectArticleById(article_id)
+        .then(()=>{
+            
+            return db.query(`
+            SELECT 
+                comment_id, body, author, created_at, votes
+            FROM comments
+            WHERE article_id = $1
+            ;`, [article_id])
+        })
+        .then(({rows : article}) => {
+            return article;
+        })
+}
+
+module.exports = {selectArticleById, updateArticleById, selectArticles, selectCommentsByArticleId}
