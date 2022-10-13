@@ -104,6 +104,59 @@ describe('GET /api/articles/:article_id - comment_count', () => {
   })
 })
 
+describe.only('POST /api/articles/:article_id/comment', () => {
+  test('Return status 201 and returns posted comment', () => {
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send({username: "icellusedkars", body: "great article!"})
+    .expect(201)
+    .then(({body}) => {
+      expect(body.comment).toEqual(expect.objectContaining({
+        comment_id: 19,
+        votes: 0,
+        body: "great article!",
+        author: "icellusedkars",
+        article_id: 1,
+        created_at: expect.any(String),
+      }))
+    })
+  })
+
+  describe('Endpoint Error Handling', () => {
+    test("Returns 400 and an error message when invalid id passed", () => {
+      return request(app)
+      .post("/api/articles/one/comments")
+      .send({username: "icellusedkars", body: "great article!"})
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("400 Bad Request - Invalid ID")
+      })
+    })
+
+  test("Returns 404 and an error message when non-existant id given", () => {
+      return request(app)
+      .post("/api/articles/999/comments")
+      .send({username: "icellusedkars", body: "great article!"})
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe("404 Article Not Found")
+      })
+    })
+  })
+
+  describe('Request Body Error Handling', () => {
+    test("username", () => {
+      return request(app)
+      .post("/api/articles/1/comments")
+      .send({username: "icellusedkars", body: 1})
+      .expect(201)
+    })
+    })
+    describe('body', () => {
+      
+    })
+})
+
 describe('PATCH /api/articles/:article_id', () => {
   test("Return status 200 and returns the updated article with votes added to", () => {
     return request(app)

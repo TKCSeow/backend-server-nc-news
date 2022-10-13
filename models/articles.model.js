@@ -22,6 +22,23 @@ function selectArticleById (article_id) {
     })
 }
 
+function insertCommentByArticleId(article_id, username, body) {
+    return selectArticleById(article_id)
+    .then(()=>{
+
+        return db.query(`
+            INSERT INTO comments
+                (article_id, author, body)
+            VALUES
+                ($1, $2, $3)
+            RETURNING *;
+        `, [article_id, username, body])
+    })
+    .then(({rows : comment}) => {
+        return comment[0];
+    })
+}
+
 function updateArticleById (article_id, inc_votes) {     
     return selectArticleById(article_id)
         .then(()=>{
@@ -44,4 +61,4 @@ function updateArticleById (article_id, inc_votes) {
         })
 }
 
-module.exports = {selectArticleById, updateArticleById}
+module.exports = {selectArticleById, updateArticleById, insertCommentByArticleId}

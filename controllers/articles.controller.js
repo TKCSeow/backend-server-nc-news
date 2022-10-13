@@ -8,6 +8,15 @@ exports.getArticleById = (req, res, next) => {
     }).catch(err => next(err))
 }
 
+
+exports.postCommentByArticleId = (req, res, next) => {
+    const {article_id} = req.params;
+    const {username, body} = req.body;
+    return articlesModel.insertCommentByArticleId(article_id, username, body).then((comment) => {
+        return res.status(201).send({comment})
+    }).catch(err => next(err))
+}
+
 exports.patchArticleById = (req, res, next) => {
     const {article_id} = req.params;
     const {inc_votes} = req.body;
