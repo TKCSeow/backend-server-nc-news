@@ -85,6 +85,26 @@ describe('GET /api/articles', () => {
     })
   })
 
+  describe('GET /api/articles/:article_id - comment_count', () => {
+    test("Return status 200 and returns specified article with comment_count", () => {
+      return request(app)
+      .get("/api/articles/1")  
+      .expect(200)
+      .then(({body}) => {
+        const article = body.article;
+  
+        expect(article).toEqual(
+            expect.objectContaining({
+              comment_count: expect.any(Number),         
+            })
+        )
+  
+        expect(article.comment_count).toBe(11)
+  
+      })
+    })
+  })
+
   describe('GET /api/articles - QUERIES', () => {
     test("Return 200, should take a query of topic and filter articles", () => {
       return request(app)
