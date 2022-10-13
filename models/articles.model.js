@@ -2,7 +2,7 @@ const db = require("../db/connection.js");
 const modelUtils = require("./model-utils.js")
 
 function selectArticles(topic, sort_by = "created_at", order = "desc") {
-    console.log(topic, sort_by, "<<<<<<<<<<<<<<<<<<<< INPUT MODEL")
+
     if(topic === undefined && sort_by === "created_at" && order === "desc") {
         return db.query(`
             SELECT 

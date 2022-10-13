@@ -187,6 +187,15 @@ describe.only('GET /api/articles/ - More Queries', () => {
       })
     })
   })
+  test("Return 200 and all articles when given both non-default sort_by and order values", () => {
+    return request(app)
+    .get("/api/articles?sort_by=votes&&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      const articles = body.articles;
+      expect(articles).toBeSortedBy("votes", { descending: false })
+    })
+  })
 })
 
 describe('GET /api/articles/:article_id', () => {
