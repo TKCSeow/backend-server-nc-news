@@ -104,7 +104,7 @@ describe('GET /api/articles/:article_id - comment_count', () => {
   })
 })
 
-describe.only('POST /api/articles/:article_id/comment', () => {
+describe('POST /api/articles/:article_id/comment', () => {
   test('Return status 201 and returns posted comment', () => {
     return request(app)
     .post("/api/articles/1/comments")
@@ -163,21 +163,13 @@ describe.only('POST /api/articles/:article_id/comment', () => {
       })
     })
 
-    test("Return 400 and when given empty/not enough ", () => {
+    test("Return 400 and when given empty/not enough data given", () => {
       return request(app)
       .post("/api/articles/1/comments")
-      .send({username: "icellusedkars", body: "great article!", votes: 64, tag: "funny"})
-      .expect(201)
-      .then(({body}) => {
-        const comment = body.comment;
-        expect(comment).toEqual(expect.objectContaining({
-          comment_id: 19,
-          votes: 0,
-          body: "great article!",
-          author: "icellusedkars",
-          article_id: 1,
-          created_at: expect.any(String),
-        }))
+      .send({})
+      .expect(400)
+      .then(({body}) => {        
+        expect(body.msg).toBe("400 Bad Request - not enough data given")
       })
     })
 

@@ -23,6 +23,11 @@ function selectArticleById (article_id) {
 }
 
 function insertCommentByArticleId(article_id, username, body) {
+
+    if(username === undefined || body === undefined) {
+        return Promise.reject({status: 400, msg: "400 Bad Request - not enough data given"})
+    }
+
     return selectArticleById(article_id)
     .then(()=>{
 
