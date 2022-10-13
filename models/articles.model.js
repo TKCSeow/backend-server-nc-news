@@ -4,7 +4,7 @@ const format = require('pg-format');
 
 function selectArticles(topic) {
     
-    if(arguments.length === 0){
+    if(Array.from(arguments).every(arg => arg === undefined)){
         return db.query(`
             SELECT 
                 articles.*,
