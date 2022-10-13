@@ -1,8 +1,8 @@
 const articlesModel = require("../models/articles.model.js");
 
 exports.getArticles = (req, res, next) => {
-    const { topic } = req.query;
-    return articlesModel.selectArticles(topic).then((articles) => {
+    const { topic, sort_by, order } = req.query;
+    return articlesModel.selectArticles(topic, sort_by, order).then((articles) => {
         return res.status(200).send({articles})
     }).catch(err => next(err))
 }
