@@ -7,22 +7,6 @@ exports.getSlugsFromTopicsDatabase = () => {
     })
 }
 
-exports.getListOfValidQueriesFromDatabase = (column, database) => {
-    return db.query(`SELECT ${column} FROM ${database}`)
-    .then(({rows}) => {
-
-        const queries = rows.map(value => {
-            return value[column]
-        });
-        
-        const uniqueQueries = queries.filter((query, index, arr) => {
-            return arr.indexOf(query) === index;
-        })
-
-        return uniqueQueries;
-    })
-  }
-
 exports.createValidatedQueriesStr = (table, column, validQueriesValues, queryValue) => {
 
     if (queryValue === undefined) {
