@@ -283,6 +283,61 @@ describe('PATCH /api/articles/:article_id', () => {
 
 })
 
+describe.only('GET /api/articles/:article_id/comments', () => {
+  test('Return status 200 and return all comments of articles', () => {
+    return request(app)
+    .get("/api/articles/1/comments")
+    .expect(200)
+    .then(({body}) => {
+      const comments = body.comments;
+      expect(comments).toBeInstanceOf(Array)
+      expect(comments).toHaveLength(11)
+      
+      comments.forEach(comment => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+        }))
+      })
+    })
+  })
+
+  test('Return status 200 and empty array when there are no comments on an article', () => {
+    return request(app)
+    .get("/api/articles/11/comments")
+    .expect(200)
+    .then(({body}) => {
+      const comments = body.comments;
+      expect(comments).toEqual([])
+    })
+  })
+
+  describe('ERROR HANDLING', () => {
+    test("Returns 400 and an error message when invalid id passed", () => {
+      return request(app)
+      .get("/api/articles/one/comments")
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("400 Bad Request - Invalid ID")
+      })
+    })
+
+    test("Returns 404 and an error message when non-existant article requested", () => {
+      return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe("404 Article Not Found")
+      })
+    })
+  })
+
+})
+
 describe('GET /api/users', () => {
     test("Return status 200 and returns of all users", () => {
       return request(app)
