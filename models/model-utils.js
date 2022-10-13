@@ -1,5 +1,11 @@
 const db = require("../db/connection")
-const format = require('pg-format');
+
+exports.getSlugsFromTopicsDatabase = () => {
+    return db.query(`SELECT slug FROM topics`)
+    .then(({rows}) => {
+        return rows.map(topic => topic["slug"])
+    })
+}
 
 exports.getListOfValidQueriesFromDatabase = (column, database) => {
     return db.query(`SELECT ${column} FROM ${database}`)
@@ -34,15 +40,3 @@ exports.createValidatedQueriesStr = (table, column, validQueriesValues, queryVal
     return Promise.reject({status: 404, msg: `404 no resources found`})
     
 }
-
-
-
-exports.checkExists = (table, column, value) => {
-    const queryStr = format('SELECT * FROM %I WHERE %I = $1;', table, column);
-    return db.query(queryStr, [value]).then(()=> {
-        if (dbOutput.rows.length === 0) {
-            return Promise.reject({ status: 404, msg: `404 no resouces found` });
-        }
-
-    })
-};

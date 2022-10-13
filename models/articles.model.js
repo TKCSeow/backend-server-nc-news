@@ -3,7 +3,7 @@ const modelUtils = require("./model-utils.js")
 
 function selectArticles(topic) {
     
-    if(Array.from(arguments).every(arg => arg === undefined)){
+    if(topic === undefined) {
         return db.query(`
             SELECT 
                 articles.*,
@@ -19,10 +19,8 @@ function selectArticles(topic) {
         })
     }
 
-    return Promise.all([
-        modelUtils.getListOfValidQueriesFromDatabase("topic", "articles")
-    ])
-    .then(([validTopics]) => {
+    return modelUtils.getSlugsFromTopicsDatabase()
+    .then((validTopics) => {
   
         const validatedTopicQuery = modelUtils.createValidatedQueriesStr("articles","topic", validTopics, topic);
 
