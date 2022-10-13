@@ -83,6 +83,28 @@ function selectArticleById (article_id) {
     })
 }
 
+function insertCommentByArticleId(article_id, username, body) {
+
+    if(username === undefined || body === undefined) {
+        return Promise.reject({status: 400, msg: "400 Bad Request - not enough data given"})
+    }
+
+    return selectArticleById(article_id)
+    .then(()=>{
+
+        return db.query(`
+            INSERT INTO comments
+                (article_id, author, body)
+            VALUES
+                ($1, $2, $3)
+            RETURNING *;
+        `, [article_id, username, body])
+    })
+    .then(({rows : comment}) => {
+        return comment[0];
+    })
+}
+
 function updateArticleById (article_id, inc_votes) {     
     return selectArticleById(article_id)
         .then(()=>{
@@ -121,4 +143,4 @@ function selectCommentsByArticleId(article_id) {
         })
 }
 
-module.exports = {selectArticleById, updateArticleById, selectArticles, selectCommentsByArticleId}
+module.exports = {selectArticleById, updateArticleById, selectArticles, selectCommentsByArticleId, insertCommentByArticleId}
