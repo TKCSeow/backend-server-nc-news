@@ -76,16 +76,3 @@ localhost:9090/api
 [Jest]: https://img.shields.io/badge/Jest-323330?style=for-the-badge&logo=Jest&logoColor=white
 [VSCode-url]: https://code.visualstudio.com/
 [VSCode]: 	https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white
-<!-- Nearly there!
-
-The README is targeted at people who will come to your repo (potentially from your CV or portfolio website). They'll want to see what you have created and try it out for themselves(not _just_ to look at your code!).
-
-You should consider the person reading your README is another developer and so you can use high level language to describe your project
-
-
--Link to hosted version
--A summary of what the project is
--Provide clear instructions of how to clone, install dependencies, seed local database, and run tests
--Include information about how to create the two .env files
--Specify minimum versions of Node.js and Postgres needed to run the project
- -->
