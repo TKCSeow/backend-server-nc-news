@@ -135,6 +135,69 @@ describe('GET /api/articles', () => {
 
 })
 
+describe.only('GET /api/articles/ - More Queries', () => {
+  describe('Sort By', () => {
+    test("Return 200 and all articles when given non-default sort_by value", () => {
+      return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("author", { descending: true })
+      })
+    })
+    test("Return 200 and all articles when given sort_by value of comment_count", () => {
+      return request(app)
+      .get("/api/articles?sort_by=comment_count")
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("comment_count", { descending: true })
+      })
+    })
+    describe('error handling', () => { 
+      test("Return 400 and error message when given non-existent sort_by value", () => {
+        return request(app)
+        .get("/api/articles?sort_by=non-existent")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("400 Bad Request - invalid query given")
+        })
+      })
+    })
+  })
+  describe('Order', () => { 
+    test("Return 200 and all articles when given non-default order value", () => {
+      return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("created_at", { descending: false })
+      })
+    })
+    describe('error handling', () => { 
+      test("Return 400 and error message when given invalid order value", () => {
+        return request(app)
+        .get("/api/articles?order=non-existent")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe(`400 Bad Request - must receive "desc" or "asc"`)
+        })
+      })
+    })
+  })
+  test("Return 200 and all articles when given both non-default sort_by and order values", () => {
+    return request(app)
+    .get("/api/articles?sort_by=votes&&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      const articles = body.articles;
+      expect(articles).toBeSortedBy("votes", { descending: false })
+    })
+  })
+})
+
 describe('GET /api/articles/:article_id', () => {
     test("Return status 200 and returns data of specified article", () => {
       return request(app)
@@ -192,6 +255,78 @@ describe('GET /api/articles/:article_id - comment_count', () => {
       expect(article.comment_count).toBe(11)
 
     })
+  })
+})
+
+describe('POST /api/articles/:article_id/comment', () => {
+  test('Return status 201 and returns posted comment', () => {
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send({username: "icellusedkars", body: "great article!"})
+    .expect(201)
+    .then(({body}) => {
+      expect(body.comment).toEqual(expect.objectContaining({
+        comment_id: 19,
+        votes: 0,
+        body: "great article!",
+        author: "icellusedkars",
+        article_id: 1,
+        created_at: expect.any(String),
+      }))
+    })
+  })
+
+  describe('Endpoint Error Handling', () => {
+    test("Returns 400 and an error message when invalid id passed", () => {
+      return request(app)
+      .post("/api/articles/one/comments")
+      .send({username: "icellusedkars", body: "great article!"})
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("400 Bad Request - Invalid ID")
+      })
+    })
+
+  test("Returns 404 and an error message when non-existant id given", () => {
+      return request(app)
+      .post("/api/articles/999/comments")
+      .send({username: "icellusedkars", body: "great article!"})
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe("404 Article Not Found")
+      })
+    })
+  })
+
+  describe('Request Body Error Handling', () => {
+    test("Return 201 and ignores any extra/invalid properties", () => {
+      return request(app)
+      .post("/api/articles/1/comments")
+      .send({username: "icellusedkars", body: "great article!", votes: 64, tag: "funny"})
+      .expect(201)
+      .then(({body}) => {
+        const comment = body.comment;
+        expect(comment).toEqual(expect.objectContaining({
+          comment_id: 19,
+          votes: 0,
+          body: "great article!",
+          author: "icellusedkars",
+          article_id: 1,
+          created_at: expect.any(String),
+        }))
+      })
+    })
+
+    test("Return 400 and when given empty/not enough data given", () => {
+      return request(app)
+      .post("/api/articles/1/comments")
+      .send({})
+      .expect(400)
+      .then(({body}) => {        
+        expect(body.msg).toBe("400 Bad Request - not enough data given")
+      })
+    })
+
   })
 })
 

@@ -1,9 +1,9 @@
 const db = require("../db/connection.js");
 const modelUtils = require("./model-utils.js")
 
-function selectArticles(topic) {
-    
-    if(topic === undefined) {
+function selectArticles(topic, sort_by = "created_at", order = "desc") {
+
+    if(topic === undefined && sort_by === "created_at" && order === "desc") {
         return db.query(`
             SELECT 
                 articles.*,
@@ -19,13 +19,25 @@ function selectArticles(topic) {
         })
     }
 
-    return modelUtils.getSlugsFromTopicsDatabase()
-    .then((validTopics) => {
+    return Promise.all([
+        modelUtils.getSlugsFromTopicsDatabase(),
+        modelUtils.getValidArticleColumns()
+    ])
+    .then(([validTopics, validSortByValues]) => {
   
         const validatedTopicQuery = modelUtils.createValidatedQueriesStr("articles","topic", validTopics, topic);
 
         if(typeof validatedTopicQuery !== "string"){
             return validatedTopicQuery;
+        }
+        
+        validSortByValues.push("comment_count");
+        if(validSortByValues.includes(sort_by) === false) {
+            return Promise.reject({status: 400, msg: "400 Bad Request - invalid query given"})
+        }
+
+        if(order !== "desc" && order !== "asc") {
+            return Promise.reject({status: 400, msg: `400 Bad Request - must receive "desc" or "asc"`})
         }
         
         
@@ -38,7 +50,7 @@ function selectArticles(topic) {
             ON comments.article_id = articles.article_id
             ${validatedTopicQuery}
             GROUP BY articles.article_id   
-            ORDER BY created_at DESC
+            ORDER BY ${sort_by} ${order.toUpperCase()}
             
         ;`)
     
@@ -68,6 +80,28 @@ function selectArticleById (article_id) {
         }
 
         return article[0];
+    })
+}
+
+function insertCommentByArticleId(article_id, username, body) {
+
+    if(username === undefined || body === undefined) {
+        return Promise.reject({status: 400, msg: "400 Bad Request - not enough data given"})
+    }
+
+    return selectArticleById(article_id)
+    .then(()=>{
+
+        return db.query(`
+            INSERT INTO comments
+                (article_id, author, body)
+            VALUES
+                ($1, $2, $3)
+            RETURNING *;
+        `, [article_id, username, body])
+    })
+    .then(({rows : comment}) => {
+        return comment[0];
     })
 }
 
@@ -109,4 +143,4 @@ function selectCommentsByArticleId(article_id) {
         })
 }
 
-module.exports = {selectArticleById, updateArticleById, selectArticles, selectCommentsByArticleId}
+module.exports = {selectArticleById, updateArticleById, selectArticles, selectCommentsByArticleId, insertCommentByArticleId}

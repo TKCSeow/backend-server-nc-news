@@ -24,3 +24,13 @@ exports.createValidatedQueriesStr = (table, column, validQueriesValues, queryVal
     return Promise.reject({status: 404, msg: `404 no resources found`})
     
 }
+
+exports.getValidArticleColumns = () => {
+    return db.query(`
+        SELECT *
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_NAME = N'articles'
+    `).then(({rows}) => {
+        return rows.map(row => row["column_name"])
+    })
+}
