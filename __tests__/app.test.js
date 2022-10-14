@@ -135,6 +135,69 @@ describe('GET /api/articles', () => {
 
 })
 
+describe.only('GET /api/articles/ - More Queries', () => {
+  describe('Sort By', () => {
+    test("Return 200 and all articles when given non-default sort_by value", () => {
+      return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("author", { descending: true })
+      })
+    })
+    test("Return 200 and all articles when given sort_by value of comment_count", () => {
+      return request(app)
+      .get("/api/articles?sort_by=comment_count")
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("comment_count", { descending: true })
+      })
+    })
+    describe('error handling', () => { 
+      test("Return 400 and error message when given non-existent sort_by value", () => {
+        return request(app)
+        .get("/api/articles?sort_by=non-existent")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("400 Bad Request - invalid query given")
+        })
+      })
+    })
+  })
+  describe('Order', () => { 
+    test("Return 200 and all articles when given non-default order value", () => {
+      return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("created_at", { descending: false })
+      })
+    })
+    describe('error handling', () => { 
+      test("Return 400 and error message when given invalid order value", () => {
+        return request(app)
+        .get("/api/articles?order=non-existent")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe(`400 Bad Request - must receive "desc" or "asc"`)
+        })
+      })
+    })
+  })
+  test("Return 200 and all articles when given both non-default sort_by and order values", () => {
+    return request(app)
+    .get("/api/articles?sort_by=votes&&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      const articles = body.articles;
+      expect(articles).toBeSortedBy("votes", { descending: false })
+    })
+  })
+})
+
 describe('GET /api/articles/:article_id', () => {
     test("Return status 200 and returns data of specified article", () => {
       return request(app)
