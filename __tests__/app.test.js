@@ -23,7 +23,7 @@ describe("ALL *", () => {
     })
   })
 
-describe.only("GET /api", () => {
+describe("GET /api", () => {
   test("Return 200 and return json formatted string with endpoints", () => {
     return request(app)
     .get("/api")
