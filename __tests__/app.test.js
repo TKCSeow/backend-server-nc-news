@@ -338,7 +338,7 @@ describe('GET /api/articles/:article_id/comments', () => {
 
 })
 
-describe.only('DELETE /api/comments/:comment_id', () => {
+describe('DELETE /api/comments/:comment_id', () => {
   test("Return 204 when successful", () => {
     return request(app)
     .delete("/api/comments/1")
