@@ -135,7 +135,7 @@ describe('GET /api/articles', () => {
 
 })
 
-describe.only('GET /api/articles/ - More Queries', () => {
+describe('GET /api/articles/ - More Queries', () => {
   describe('Sort By', () => {
     test("Return 200 and all articles when given non-default sort_by value", () => {
       return request(app)
