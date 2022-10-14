@@ -473,6 +473,30 @@ describe('GET /api/articles/:article_id/comments', () => {
 
 })
 
+describe('DELETE /api/comments/:comment_id', () => {
+  test("Return 204 when successful", () => {
+    return request(app)
+    .delete("/api/comments/1")
+    .expect(204);
+  })
+  test("Return 400 and error message when invalid id provided", () => {
+    return request(app)
+    .delete("/api/comments/one")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("400 Bad request - invalid comment id given")
+    })
+  })
+  test("Return 404 and error message when non-existent id provided", () => {
+    return request(app)
+    .delete("/api/comments/99999")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("404 comment not found")
+    })
+  })
+})
+
 describe('GET /api/users', () => {
     test("Return status 200 and returns of all users", () => {
       return request(app)
