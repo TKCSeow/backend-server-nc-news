@@ -23,6 +23,32 @@ describe("ALL *", () => {
     })
   })
 
+describe("GET /api", () => {
+  test("Return 200 and return json formatted string with endpoints", () => {
+    return request(app)
+    .get("/api")
+    .expect(200)
+    .then(({body}) => {
+      const jsonBody = JSON.parse(body.endpoints);
+      const endpoints = [
+        "GET /api",
+        'GET /api/topics',
+        'GET /api/articles',
+        'GET /api/articles/:article_id',
+        'POST /api/articles/:article_id/comments',
+        'PATCH /api/articles/:article_id',
+        'GET /api/articles/:article_id/comments',
+        'GET /api/users',
+      ]
+
+      const keys = Object.keys(jsonBody);
+      expect(keys).toHaveLength(8);
+      expect(keys).toEqual(expect.arrayContaining(endpoints));
+
+    })
+  })
+})
+
 describe('GET /api/topics', () => {
     test("Return status 200 and all topics", () => {
       return request(app)
