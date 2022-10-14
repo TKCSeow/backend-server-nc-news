@@ -1,12 +1,16 @@
 const express = require("express");
 const app = express();
+const controller = require("./controllers/controller.js")
 const topicsController = require("./controllers/topics.controller.js")
 const articlesController = require("./controllers/articles.controller.js")
 const usersController = require("./controllers/users.controller.js")
 
+
 app.use(express.json());
 
 // Endpoints
+app.get("/api", controller.getEndpointDocumentation)
+
 app.get("/api/topics", topicsController.getTopics)
 
 app.get("/api/articles", articlesController.getArticles)
