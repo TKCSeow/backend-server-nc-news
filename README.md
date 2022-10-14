@@ -20,6 +20,7 @@ This is a backend server api built as part of my time on the Northcoders bootcam
    ```sh
    git clone https://github.com/TKCSeow/backend-server-nc-news.git
    ```
+    cd into the newly created directory
 2. Install NPM packages
    ```sh
    npm install
