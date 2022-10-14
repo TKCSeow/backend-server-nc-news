@@ -29,7 +29,7 @@ describe("GET /api", () => {
     .get("/api")
     .expect(200)
     .then(({body}) => {
-      const jsonBody = JSON.parse(body.endpoints);
+      const jsonBody = body.endpoints;
       const endpoints = [
         "GET /api",
         'GET /api/topics',
