@@ -20,7 +20,3 @@ exports.removeCommentById = (comment_id) => {
         return comment
     })
 }   
-
-// DELETE FROM restaurants
-// WHERE restaurant_id = $1
-// RETURNING *;
