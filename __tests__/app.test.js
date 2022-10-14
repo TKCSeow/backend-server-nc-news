@@ -23,6 +23,32 @@ describe("ALL *", () => {
     })
   })
 
+describe("GET /api", () => {
+  test("Return 200 and return json formatted string with endpoints", () => {
+    return request(app)
+    .get("/api")
+    .expect(200)
+    .then(({body}) => {
+      const jsonBody = JSON.parse(body.endpoints);
+      const endpoints = [
+        "GET /api",
+        'GET /api/topics',
+        'GET /api/articles',
+        'GET /api/articles/:article_id',
+        'POST /api/articles/:article_id/comments',
+        'PATCH /api/articles/:article_id',
+        'GET /api/articles/:article_id/comments',
+        'GET /api/users',
+      ]
+
+      const keys = Object.keys(jsonBody);
+      expect(keys).toHaveLength(8);
+      expect(keys).toEqual(expect.arrayContaining(endpoints));
+
+    })
+  })
+})
+
 describe('GET /api/topics', () => {
     test("Return status 200 and all topics", () => {
       return request(app)
@@ -471,6 +497,30 @@ describe('GET /api/articles/:article_id/comments', () => {
     })
   })
 
+})
+
+describe('DELETE /api/comments/:comment_id', () => {
+  test("Return 204 when successful", () => {
+    return request(app)
+    .delete("/api/comments/1")
+    .expect(204);
+  })
+  test("Return 400 and error message when invalid id provided", () => {
+    return request(app)
+    .delete("/api/comments/one")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("400 Bad request - invalid comment id given")
+    })
+  })
+  test("Return 404 and error message when non-existent id provided", () => {
+    return request(app)
+    .delete("/api/comments/99999")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("404 comment not found")
+    })
+  })
 })
 
 describe('GET /api/users', () => {
