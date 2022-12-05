@@ -5,8 +5,10 @@ const topicsController = require("./controllers/topics.controller.js")
 const articlesController = require("./controllers/articles.controller.js")
 const usersController = require("./controllers/users.controller.js")
 const commentsController = require("./controllers/comments.controller.js")
+const cors = require('cors');
 
 
+app.use(cors());
 app.use(express.json());
 
 // Endpoints
