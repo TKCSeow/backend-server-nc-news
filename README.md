@@ -1,17 +1,16 @@
 # Backend Server - NC News API
 
-Find hosted version here: https://tims-nc-news-39.herokuapp.com/api
+Find hosted version here: https://tim-nc-news.cyclic.app/api
 
 ## Introduction
 
-This is a backend server api built as part of my time on the Northcoders bootcamp. This project is to showcase what I have learnt about backend development, from using express.js to setup the project with postgresql as my database to testing my project with Jest and hosting it all with Heroku
+This is a backend server api built as part of my time on the Northcoders bootcamp. This project is to showcase what I have learnt about backend development, from using express.js to setup the project with postgresql as my database to testing my project with Jest
 
 ### Technologies used to develop this project:
  [![Javascript]][Javascript-url]
 <br> [![Node.js]][Node.js-url]
 <br> [![Express.js]][Express.js-url]
 <br> [![Postgresql]][Postgresql-url]
-<br> [![Heroku]][Heroku-url]
 <br> [![Jest]][Jest-url]
 <br> [![VSCode]][VSCode-url]
 ## How to setup project
