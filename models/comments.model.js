@@ -5,13 +5,12 @@ exports.selectComments = (author) => {
     if(!author) {
         return db.query(`
         SELECT * FROM comments
-    `, [comment_id])
+    `, [])
     }
 
     return db.query(`
         SELECT * FROM comments
         WHERE author = $1
-        RETURNING *;
     `, [author])
 
     .then(({rows: comments}) => {
