@@ -1,6 +1,7 @@
 # Backend Server - NC News API
 
-Find hosted version here: https://tim-nc-news.cyclic.app/api
+Find hosted version here: https://tim-nc-news.cyclic.app/api<br><br>
+Find a frontend Project based on this server here: <br> - GitHub: https://github.com/TKCSeow/fe-nc-news <br> - Hosted Version: https://tim-nc-news.netlify.app/
 
 ## Introduction
 
