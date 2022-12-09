@@ -1,5 +1,24 @@
 const db = require("../db/connection.js");
 
+exports.selectComments = (author) => {
+
+    if(!author) {
+        return db.query(`
+        SELECT * FROM comments
+    `, [comment_id])
+    }
+
+    return db.query(`
+        SELECT * FROM comments
+        WHERE author = $1
+        RETURNING *;
+    `, [author])
+
+    .then(({rows: comments}) => {
+        return comments
+    })
+}
+
 exports.removeCommentById = (comment_id) => {
 
     if(isNaN(comment_id) === true) {

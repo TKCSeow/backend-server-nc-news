@@ -25,6 +25,7 @@ app.get("/api/articles/:article_id/comments", articlesController.getCommentsArti
 app.patch("/api/articles/:article_id", articlesController.patchArticleById)
 app.delete("/api/comments/:comment_id", commentsController.deleteCommentById)
 app.get("/api/users", usersController.getUsers)
+app.get("/api/comments", commentsController.getComments)
 
 app.all("*", (req, res) => {
     res.status(404).send({msg: "404 Route Not Found"})
